@@ -1,8 +1,7 @@
 import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import * as path from 'path'
-//import prismjs from 'vite-plugin-prismjs';
-import prismjs from 'prismjs'
+
 export default defineConfig({
     plugins: [vue(),
         /*prismjs({

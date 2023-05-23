@@ -109,7 +109,7 @@ const http = {
                 reject(error)
             })
         })
-    }
+    },
 }
 
 // 暴露所写的内容
