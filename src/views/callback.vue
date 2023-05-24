@@ -11,10 +11,6 @@ onMounted(() => {
     window.close()
   }
 })
-
-const test =()=>{
-  console.log("tes")
-}
 </script>
 
 <style scoped>

@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^1.4.0",
     "element-plus": "^2.3.4",
+    "glob": "^10.2.6",
     "md-editor-v3": "^4.0.1",
     "prettier": "^2.8.8",
     "reset.css": "^2.0.2",

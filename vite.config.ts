@@ -4,9 +4,7 @@ import * as path from 'path'
 
 export default defineConfig({
     plugins: [vue(),
-        /*prismjs({
-            languages: 'all',
-        }),*/],
+        ],
     resolve: {
         //设置别名
         alias: {
