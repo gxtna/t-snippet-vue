@@ -16,12 +16,10 @@
           </template>
         </el-input>
       </el-col>
-      <el-col :span="4">
-        <el-button type="primary" @click="writeSnippet" style="font-size: 12px">写一个</el-button>
-        <div>
-          <el-text class="mx-1" type="success">{{userInfo.userName}}</el-text>
-          <el-avatar :size="30" :src="userInfo.userAvatar" />
-        </div>
+      <el-col :span="4" style="display: flex;">
+        <el-button type="primary" @click="writeSnippet" style="font-size: 12px;margin-top: 10px">写一个</el-button>
+        <el-text style="margin-left: 20px;margin-bottom: 8px" class="mx-1" type="success">{{ userInfo.userName }}</el-text>
+        <el-avatar style="margin-left: 20px;margin-top: 8px" :size="30" :src="userInfo.userAvatar"/>
       </el-col>
     </el-row>
   </div>
@@ -33,13 +31,13 @@
             style="max-width: 460px"
         >
           <el-form-item label="账号">
-            <el-input />
+            <el-input/>
           </el-form-item>
           <el-form-item label="密码">
-            <el-input  />
+            <el-input/>
           </el-form-item>
           <el-form-item label="验证码">
-            <el-input />
+            <el-input/>
           </el-form-item>
         </el-form>
       </el-collapse-item>
@@ -48,8 +46,8 @@
       <el-text class="mx-1" type="success">其他方式登录</el-text>
     </div>
     <div style="margin-top: 20px">
-      <el-image class="svgLogin" src="src/assets/svg/github-fill.svg"  @click="github_login"></el-image>
-      <el-image class="svgLogin" src="src/assets/svg/gitee.svg"  @click="github_login"></el-image>
+      <el-image class="svgLogin" src="src/assets/svg/github-fill.svg" @click="github_login"></el-image>
+      <el-image class="svgLogin" src="src/assets/svg/gitee.svg" @click="github_login"></el-image>
     </div>
 
     <template #footer>
@@ -65,10 +63,12 @@
 import {Search} from '@element-plus/icons-vue'
 import http from "@/utils/request";
 import {reactive, ref} from "vue";
+import {useRouter} from "vue-router";
+const router = useRouter()
 const loginVisible = ref(false)
 let userInfo = reactive({
-  userName:'gxtna',
-  userAvatar:'https://avatars.githubusercontent.com/u/55348895?v=4'
+  userName: 'gxtna',
+  userAvatar: 'https://avatars.githubusercontent.com/u/55348895?v=4'
 })
 const avatarUrl = "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
 const github_login = () => {
@@ -94,22 +94,24 @@ const githubLogin = async (code) => {
   localStorage.removeItem("code")
 }
 
-const writeSnippet=()=>{
+const writeSnippet = () => {
   const token = localStorage.getItem("token");
-  if (token){
+  if (token) {
     // 跳转页面 ,显示用户信息
-
-  }else {
+    router.push({
+      path: '/edit'
+    })
+  } else {
     // 弹出登录窗口
     loginVisible.value = true
 
     console.log("2")
   }
 }
-const snippetLogin=()=>{
+const snippetLogin = () => {
   // snippet 的账号密码登录
   // TODO
-  localStorage.setItem("token","token")
+  localStorage.setItem("token", "token")
   loginVisible.value = false
 }
 </script>

@@ -1,15 +1,6 @@
 <template>
   <div style="width: 100%;height: 10%">
-    <el-button>github</el-button>
-    <el-button>github</el-button>
-    <el-button>github</el-button>
-    <el-button>github</el-button>
-    <el-button>github</el-button>
-    <el-button>github</el-button>
-    <el-button>github</el-button>
-    <el-button>github</el-button>
-    <el-button>github</el-button>
-    <el-button>github</el-button>
+    <el-text type="success">底部</el-text>
   </div>
 </template>
 
