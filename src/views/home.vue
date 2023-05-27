@@ -1,22 +1,24 @@
 <template>
   <Header/>
   <div class="homeDiv">
-    <el-card class="homeCard" @click="checkDetails">
+    <el-card class="homeCard" @click="checkDetails(item.snippet_id)" v-for="item in snippets">
       <template #header>
         <div class="card-header" style="margin-bottom: 20px">
-          <el-text style="float: left;font-size: 20px;" type="success">二叉树</el-text>
+          <el-text style="float: left;font-size: 20px;" type="success">{{ item.title }}</el-text>
         </div>
       </template>
-      <MdPreview :editorId="id" :modelValue="markdown"/>
-      <el-text truncated type="success">这是一段java实现的二叉树，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家</el-text>
+      <MdPreview :editorId="id" :modelValue="item.content"/>
+      <el-text truncated type="success">
+        {{ item.desc }}
+      </el-text>
       <el-tag class="homeTag"
-          v-for="item in tagOptions"
-          :key="item"
-          type="warning"
-          effect="dark"
-          round
+              v-for="tag in (item.tags)"
+              :key="tag"
+              type="warning"
+              effect="dark"
+              round
       >
-        {{ item }}
+        {{ tag }}
       </el-tag>
     </el-card>
   </div>
@@ -30,9 +32,10 @@ import 'md-editor-v3/lib/preview.css';
 import http from "@/utils/request";
 import Header from "@/views/header/header.vue";
 import {useRouter} from "vue-router";
+import {onMounted, reactive, ref} from "vue";
 
 const router = useRouter()
-let tagOptions = ['Java','JavaScript','Rust']
+let tagOptions = ['Java', 'JavaScript', 'Rust']
 const id = 'preview-only';
 const markdown = '```rust-lang\n' +
     'use tokio;\n' +
@@ -45,27 +48,48 @@ const markdown = '```rust-lang\n' +
     '    server::web_server::web_server_route().await;\n' +
     '}\n' +
     '```'
-const checkDetails=()=>{
-  console.log("checkDetails")
-  router.push("/detail")
+
+let snippets: [] = reactive([])
+
+const checkDetails = (snippet_id: String) => {
+  router.push({
+    path: "/detail",
+    query: {id: snippet_id}
+  })
 }
+const getAllSnippet = () => {
+  http.get("/get_all_snippets").then(res => {
+    res.data.forEach(x => {
+      x.desc = x.description
+      x.tags = JSON.parse(x.tags)
+      snippets.push(x)
+    })
+  })
+  console.log(snippets)
+}
+onMounted(() => {
+  getAllSnippet()
+})
 </script>
 
 <style scoped>
 :deep(.code-block) {
   text-align: left;
 }
-.homeDiv{
+
+.homeDiv {
   width: 100%;
-  height: 100%;
+  height: 80%;
   margin-top: 50px;
   overflow: auto
 }
-.homeCard{
+
+.homeCard {
   width: 50%;
   margin: 0 0 20px 25%
 }
-.homeTag{
+
+.homeTag {
   float: left;
   margin: 10px 0 10px 10px;
   text-align: center

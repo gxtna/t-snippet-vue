@@ -1,78 +1,78 @@
 <template>
   <Header/>
-  <h1>detail</h1>
   <div class="contentDiv">
     <div class="divInput">
       <el-text class="textWidth" type="success">片段标题：</el-text>
-      <el-input v-model="contentInfo.title" placeholder="Please input"/>
+      <el-text class="textWidth" type="success">{{ contentInfo.title }}</el-text>
     </div>
     <div class="divInput">
       <el-text class="textWidth" type="success">片段标签：</el-text>
-      <el-select style="width: 100%"
-                 v-model="contentInfo.tag"
-                 :multiple="true"
-                 :filterable="true"
-                 :allow-create="true"
-                 :clearable="true"
-                 :default-first-option="false"
-                 :reserve-keyword="false"
-                 placeholder="Choose tags for your article"
+      <el-tag class="homeTag"
+              v-for="item in contentInfo.tag"
+              :key="item"
+              type="warning"
+              effect="dark"
+              round
       >
-        <el-option
-            v-for="item in tagOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-        />
-      </el-select>
+        {{ item }}
+      </el-tag>
     </div>
     <div class="divInput">
       <el-text class="textWidth" type="success">片段描述：</el-text>
-      <el-input v-model="contentInfo.desc" placeholder="Please input"/>
+      <el-input type="textarea" disabled v-model="contentInfo.desc" :rows="3"></el-input>
     </div>
-    <MdEditor :editorId="id" v-model="contentInfo.content" style="text-align: left"/>
+    <MdPreview :editorId="id" :modelValue="contentInfo.content" style="text-align: left"/>
   </div>
-  <el-button type="success" @click="commitContent">提交</el-button>
 </template>
 
 
 <script setup lang="ts">
 
 import Header from "@/views/header/header.vue";
-import {MdEditor} from 'md-editor-v3';
+import {MdEditor, MdPreview} from 'md-editor-v3';
 import {onMounted, reactive} from "vue";
+import {useRoute} from "vue-router";
+import http from "@/utils/request";
 
 const id = "editorId"
+let route = useRoute()
 let contentInfo = reactive({
   title: '',
-  tag: '',
+  tag: [],
   desc: '',
   content: ''
 })
-let tagOptions = [
-  {
-    label: 'Java',
-    value: 'Java'
-  },
-  {
-    label: 'JavaScript',
-    value: 'JavaScript'
-  },
-  {
-    label: 'Rust',
-    value: 'Rust'
-  }
-]
+const tags = ["Java", "Rust"]
 
-const commitContent = () => {
-  console.log(contentInfo)
-}
-const getAllTags = () => {
-  // TODO 获取所有的tags
-
+const getDetail = (id: String) => {
+  // todo 获取详情
+  /*contentInfo.title = 'java 二叉树',
+      contentInfo.tag = tags,
+      contentInfo.desc = '这是一段java实现的二叉树，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家',
+      contentInfo.content = '```rust-lang\n' +
+          'use tokio;\n' +
+          'mod server;\n' +
+          'mod db;\n' +
+          'mod utils;\n' +
+          '\n' +
+          '#[tokio::main]\n' +
+          'async fn main() {\n' +
+          '    server::web_server::web_server_route().await;\n' +
+          '}\n' +
+          '```'*/
+  http.get("/get_snippet", {snippet_id: id}).then(res => {
+    let data = res.data
+    if (data){
+      contentInfo.title = data.title
+      contentInfo.tag =JSON.parse(data.tags)
+      contentInfo.desc = data.description
+      contentInfo.content = data.content
+    }
+  })
 }
 onMounted(() => {
-  getAllTags()
+  let id = route.query.id as String
+  getDetail(id);
 })
 </script>
 
@@ -90,5 +90,11 @@ onMounted(() => {
 
 .textWidth {
   width: 100px
+}
+
+.homeTag {
+  float: left;
+  margin: 10px 0 10px 10px;
+  text-align: center
 }
 </style>

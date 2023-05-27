@@ -69,7 +69,7 @@ const http = {
             _axios({
                 url,
                 data: params,
-                headers: {'Content-Type': 'application/json'},
+                headers: {'Content-Type': 'application/json;charset=UTF-8'},
                 method: 'POST'
             }).then(res => {
                 resolve(res)

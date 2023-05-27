@@ -1,8 +1,8 @@
-<template xmlns="http://www.w3.org/1999/html">
+<template>
   <div class="headerContainer">
     <el-row :gutter="20">
       <el-col :span="8">
-        <el-image style="width: 100px; height: 30px;margin-top: 10px" :fit="'fill'" :src="avatarUrl"/>
+        <el-image style="width: 100px; height: 30px;margin-top: 10px" :fit="'fill'" :src="avatarUrl" @click="goHome"/>
       </el-col>
       <el-col :span="12">
         <el-input
@@ -18,7 +18,10 @@
       </el-col>
       <el-col :span="4" style="display: flex;">
         <el-button type="primary" @click="writeSnippet" style="font-size: 12px;margin-top: 10px">写一个</el-button>
-        <el-text style="margin-left: 20px;margin-bottom: 8px" class="mx-1" type="success">{{ userInfo.userName }}</el-text>
+        <el-text style="margin-left: 20px;margin-bottom: 8px" class="mx-1" type="success">{{
+            userInfo.userName
+          }}
+        </el-text>
         <el-avatar style="margin-left: 20px;margin-top: 8px" :size="30" :src="userInfo.userAvatar"/>
       </el-col>
     </el-row>
@@ -64,6 +67,7 @@ import {Search} from '@element-plus/icons-vue'
 import http from "@/utils/request";
 import {reactive, ref} from "vue";
 import {useRouter} from "vue-router";
+
 const router = useRouter()
 const loginVisible = ref(false)
 let userInfo = reactive({
@@ -90,10 +94,14 @@ window.addEventListener("storage", (e) => {
 const githubLogin = async (code) => {
   await http.get("/github_login", {code: code}).then(res => {
     console.log(res)
+
   })
+  localStorage.setItem("token", "token")
   localStorage.removeItem("code")
 }
-
+const goHome = () => {
+  router.push("/")
+}
 const writeSnippet = () => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -104,7 +112,6 @@ const writeSnippet = () => {
   } else {
     // 弹出登录窗口
     loginVisible.value = true
-
     console.log("2")
   }
 }

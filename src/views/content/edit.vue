@@ -8,7 +8,7 @@
     <div class="divInput">
       <el-text class="textWidth" type="success">片段标签：</el-text>
       <el-select style="width: 100%"
-                 v-model="contentInfo.tag"
+                 v-model="contentInfo.tags"
                  :multiple="true"
                  :filterable="true"
                  :allow-create="true"
@@ -40,11 +40,15 @@
 import Header from "@/views/header/header.vue";
 import {MdEditor} from 'md-editor-v3';
 import {onMounted, reactive} from "vue";
+import http from "@/utils/request";
+import {ElMessage} from "element-plus";
+import router from "@/router";
 
 const id = "editorId"
 let contentInfo = reactive({
+  user_id: '123456',
   title: '',
-  tag: '',
+  tags: [],
   desc: '',
   content: ''
 })
@@ -64,7 +68,13 @@ let tagOptions = [
 ]
 
 const commitContent = () => {
-  console.log(contentInfo)
+  http.post("/write_snippet", contentInfo).then(res => {
+    ElMessage({
+      message: res.data ? '添加成功' : '添加失败',
+      type: res.data ? 'success' : 'warning'
+    })
+  })
+  router.push("/")
 }
 const getAllTags = () => {
   // TODO 获取所有的tags
