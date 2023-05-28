@@ -19,9 +19,9 @@
       >
         <el-option
             v-for="item in tagOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            :key="item.tag_name"
+            :label="item.tag_name"
+            :value="item.tag_name"
         />
       </el-select>
     </div>
@@ -43,31 +43,34 @@ import {onMounted, reactive} from "vue";
 import http from "@/utils/request";
 import {ElMessage} from "element-plus";
 import router from "@/router";
+import {useRoute} from "vue-router";
+import {useCodeStore} from "@/stores";
 
 const id = "editorId"
+let route = useRoute()
+const store = useCodeStore()
 let contentInfo = reactive({
-  user_id: '123456',
+  snippet_id: '',
+  user_id: '',
   title: '',
   tags: [],
   desc: '',
   content: ''
 })
-let tagOptions = [
-  {
-    label: 'Java',
-    value: 'Java'
-  },
-  {
-    label: 'JavaScript',
-    value: 'JavaScript'
-  },
-  {
-    label: 'Rust',
-    value: 'Rust'
-  }
-]
-
+let tagOptions = reactive([])
+type tagInfo = {
+  tag_id: String,
+  tag_name: String
+}
 const commitContent = () => {
+  if (contentInfo.tags.length > 2) {
+    ElMessage({
+      message: '标签最多为5个',
+      type: 'warning'
+    })
+    return
+  }
+  contentInfo.user_id = store.user_id
   http.post("/write_snippet", contentInfo).then(res => {
     ElMessage({
       message: res.data ? '添加成功' : '添加失败',
@@ -77,10 +80,29 @@ const commitContent = () => {
   router.push("/")
 }
 const getAllTags = () => {
-  // TODO 获取所有的tags
-
+  http.get("/get_all_tags").then(res => {
+    let data = res.data as Array<tagInfo>
+    data.forEach(x => {
+      tagOptions.push(x)
+    })
+  })
+}
+const getSnippet = (id: String) => {
+  http.get("/get_snippet", {snippet_id: id}).then(res => {
+    let data = res.data
+    if (data) {
+      contentInfo.snippet_id = data.snippet_id
+      contentInfo.user_id = data.user_id
+      contentInfo.title = data.title
+      contentInfo.tags = JSON.parse(data.tags)
+      contentInfo.desc = data.description
+      contentInfo.content = data.content
+    }
+  })
 }
 onMounted(() => {
+  let id = route.query.id as String
+  if (id) getSnippet(id)
   getAllTags()
 })
 </script>

@@ -18,11 +18,13 @@
       </el-col>
       <el-col :span="4" style="display: flex;">
         <el-button type="primary" @click="writeSnippet" style="font-size: 12px;margin-top: 10px">写一个</el-button>
-        <el-text style="margin-left: 20px;margin-bottom: 8px" class="mx-1" type="success">{{
-            userInfo.userName
-          }}
-        </el-text>
-        <el-avatar style="margin-left: 20px;margin-top: 8px" :size="30" :src="userInfo.userAvatar"/>
+        <div v-if="store.user_name.length >0" style="text-align: center">
+          <el-text style="margin-left: 20px;margin-bottom: 8px" class="mx-1" type="success">{{
+              store.user_name
+            }}
+          </el-text>
+          <el-avatar style="margin-left: 20px;margin-top: 8px" :size="30" :src="store.user_avatar"/>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -65,15 +67,14 @@
 <script setup lang="ts">
 import {Search} from '@element-plus/icons-vue'
 import http from "@/utils/request";
-import {reactive, ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import {useRouter} from "vue-router";
+import {useCodeStore} from "@/stores";
 
+const store = useCodeStore()
 const router = useRouter()
+
 const loginVisible = ref(false)
-let userInfo = reactive({
-  userName: 'gxtna',
-  userAvatar: 'https://avatars.githubusercontent.com/u/55348895?v=4'
-})
 const avatarUrl = "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
 const github_login = () => {
   let url = 'https://github.com/login/oauth/authorize?client_id=cfc1410aa53dc97243dd&redirect_uri=http://127.0.0.1:5173/callback'
@@ -85,19 +86,24 @@ const github_login = () => {
   let style = 'height=' + iHeight + ',innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',toolbar=no,menubar=no,scrollbars=auto,resizable=no,location=no,status=no'
   window.open(url, "", style)
 }
+let code = ref("")
 window.addEventListener("storage", (e) => {
   if (e.newValue) {
-    githubLogin(e.newValue)
-    window.removeEventListener("storage", githubLogin)
+    code.value = e.newValue
   }
+})
+watch(code, () => {
+  githubLogin(code.value)
 })
 const githubLogin = async (code) => {
   await http.get("/github_login", {code: code}).then(res => {
-    console.log(res)
-
+    if (res.data) {
+      store.user_name = res.data.login
+      store.user_avatar = res.data.avatar_url
+      store.user_id = res.data.user_id
+    }
+    loginVisible.value = false
   })
-  localStorage.setItem("token", "token")
-  localStorage.removeItem("code")
 }
 const goHome = () => {
   router.push("/")
@@ -112,12 +118,9 @@ const writeSnippet = () => {
   } else {
     // 弹出登录窗口
     loginVisible.value = true
-    console.log("2")
   }
 }
 const snippetLogin = () => {
-  // snippet 的账号密码登录
-  // TODO
   localStorage.setItem("token", "token")
   loginVisible.value = false
 }

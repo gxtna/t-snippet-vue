@@ -1,13 +1,16 @@
 <template>
   <Header/>
   <div class="homeDiv">
-    <el-card class="homeCard" @click="checkDetails(item.snippet_id)" v-for="item in snippets">
+    <el-card class="homeCard" v-for="item in snippets">
       <template #header>
         <div class="card-header" style="margin-bottom: 20px">
           <el-text style="float: left;font-size: 20px;" type="success">{{ item.title }}</el-text>
+          <el-button v-if="item.user_id===user_id" type="success" @click="toEdit(item.snippet_id)"
+                     style="float: right">编辑
+          </el-button>
         </div>
       </template>
-      <MdPreview :editorId="id" :modelValue="item.content"/>
+      <MdPreview :editorId="id" :modelValue="item.content" @click="checkDetails(item.snippet_id)"/>
       <el-text truncated type="success">
         {{ item.desc }}
       </el-text>
@@ -32,25 +35,12 @@ import 'md-editor-v3/lib/preview.css';
 import http from "@/utils/request";
 import Header from "@/views/header/header.vue";
 import {useRouter} from "vue-router";
-import {onMounted, reactive, ref} from "vue";
+import {onBeforeMount, onMounted, onRenderTriggered, onUpdated, reactive, ref} from "vue";
 
 const router = useRouter()
-let tagOptions = ['Java', 'JavaScript', 'Rust']
 const id = 'preview-only';
-const markdown = '```rust-lang\n' +
-    'use tokio;\n' +
-    'mod server;\n' +
-    'mod db;\n' +
-    'mod utils;\n' +
-    '\n' +
-    '#[tokio::main]\n' +
-    'async fn main() {\n' +
-    '    server::web_server::web_server_route().await;\n' +
-    '}\n' +
-    '```'
-
 let snippets: [] = reactive([])
-
+const user_id = localStorage.getItem("user_id")
 const checkDetails = (snippet_id: String) => {
   router.push({
     path: "/detail",
@@ -65,7 +55,12 @@ const getAllSnippet = () => {
       snippets.push(x)
     })
   })
-  console.log(snippets)
+}
+const toEdit = (id: String) => {
+  router.push({
+    path: "/edit",
+    query: {id: id}
+  })
 }
 onMounted(() => {
   getAllSnippet()

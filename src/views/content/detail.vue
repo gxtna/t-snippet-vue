@@ -42,24 +42,7 @@ let contentInfo = reactive({
   desc: '',
   content: ''
 })
-const tags = ["Java", "Rust"]
-
 const getDetail = (id: String) => {
-  // todo 获取详情
-  /*contentInfo.title = 'java 二叉树',
-      contentInfo.tag = tags,
-      contentInfo.desc = '这是一段java实现的二叉树，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家，谢谢大家',
-      contentInfo.content = '```rust-lang\n' +
-          'use tokio;\n' +
-          'mod server;\n' +
-          'mod db;\n' +
-          'mod utils;\n' +
-          '\n' +
-          '#[tokio::main]\n' +
-          'async fn main() {\n' +
-          '    server::web_server::web_server_route().await;\n' +
-          '}\n' +
-          '```'*/
   http.get("/get_snippet", {snippet_id: id}).then(res => {
     let data = res.data
     if (data){

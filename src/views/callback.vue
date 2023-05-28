@@ -4,10 +4,11 @@
 
 <script setup lang="ts">
 import {onMounted} from "vue";
+
 onMounted(() => {
   let code = window.location.search.split("=")[1]
-  if (code){
-    localStorage.setItem("code",code)
+  if (code) {
+    localStorage.setItem("code", code)
     window.close()
   }
 })
