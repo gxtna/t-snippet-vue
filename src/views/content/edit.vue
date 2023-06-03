@@ -39,7 +39,7 @@
 
 import Header from "@/views/header/header.vue";
 import {MdEditor} from 'md-editor-v3';
-import {onMounted, reactive} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import http from "@/utils/request";
 import {ElMessage} from "element-plus";
 import router from "@/router";
@@ -57,7 +57,7 @@ let contentInfo = reactive({
   desc: '',
   content: ''
 })
-let tagOptions = reactive([])
+let tagOptions = ref([])
 type tagInfo = {
   tag_id: String,
   tag_name: String
@@ -83,7 +83,7 @@ const getAllTags = () => {
   http.get("/get_all_tags").then(res => {
     let data = res.data as Array<tagInfo>
     data.forEach(x => {
-      tagOptions.push(x)
+      tagOptions.value.push(x)
     })
   })
 }

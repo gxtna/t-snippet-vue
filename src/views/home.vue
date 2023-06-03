@@ -1,5 +1,5 @@
 <template>
-  <Header/>
+  <Header @sendMag="searchData"/>
   <div class="homeDiv">
     <el-card class="homeCard" v-for="item in snippets">
       <template #header>
@@ -29,18 +29,20 @@
 
 
 <script setup lang="ts">
-import {MdEditor, MdPreview} from 'md-editor-v3';
+import {MdPreview} from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import 'md-editor-v3/lib/preview.css';
 import http from "@/utils/request";
 import Header from "@/views/header/header.vue";
 import {useRouter} from "vue-router";
-import {onBeforeMount, onMounted, onRenderTriggered, onUpdated, reactive, ref} from "vue";
+import {onMounted, ref} from "vue";
+import {useCodeStore} from "@/stores";
 
 const router = useRouter()
 const id = 'preview-only';
-let snippets: [] = reactive([])
-const user_id = localStorage.getItem("user_id")
+const snippets = ref([])
+const store = useCodeStore()
+const user_id = store.user_id
 const checkDetails = (snippet_id: String) => {
   router.push({
     path: "/detail",
@@ -52,7 +54,7 @@ const getAllSnippet = () => {
     res.data.forEach(x => {
       x.desc = x.description
       x.tags = JSON.parse(x.tags)
-      snippets.push(x)
+      snippets.value.push(x)
     })
   })
 }
@@ -60,6 +62,18 @@ const toEdit = (id: String) => {
   router.push({
     path: "/edit",
     query: {id: id}
+  })
+}
+
+const searchData = (searchInput) => {
+  http.get("/search_data", {desc: searchInput}).then(res => {
+    console.log(res)
+    snippets.value = []
+    res.data.forEach(x => {
+      x.desc = x.description
+       x.tags = JSON.parse(x.tags)
+      snippets.value.push(x)
+    })
   })
 }
 onMounted(() => {

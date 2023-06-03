@@ -29,7 +29,7 @@
 <script setup lang="ts">
 
 import Header from "@/views/header/header.vue";
-import {MdEditor, MdPreview} from 'md-editor-v3';
+import {MdPreview} from 'md-editor-v3';
 import {onMounted, reactive} from "vue";
 import {useRoute} from "vue-router";
 import http from "@/utils/request";

@@ -6,12 +6,12 @@
       </el-col>
       <el-col :span="12">
         <el-input
-            v-model="input2"
+            v-model="searchInput"
             class="w-50 m-2"
             placeholder="找一个代码片段">
           <template #suffix>
             <el-icon class="el-input__icon">
-              <search/>
+              <search @click="searchData"/>
             </el-icon>
           </template>
         </el-input>
@@ -67,20 +67,19 @@
 <script setup lang="ts">
 import {Search} from '@element-plus/icons-vue'
 import http from "@/utils/request";
-import {reactive, ref, watch} from "vue";
+import {defineEmits, ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import {useCodeStore} from "@/stores";
 
 const store = useCodeStore()
 const router = useRouter()
-
+let searchInput = ref("")
 const loginVisible = ref(false)
 const avatarUrl = "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
 const github_login = () => {
   let url = 'https://github.com/login/oauth/authorize?client_id=cfc1410aa53dc97243dd&redirect_uri=http://127.0.0.1:5173/callback'
   let iWidth = 500;                         //弹出窗口的宽度;
   let iHeight = 570;                        //弹出窗口的高度;
-  //window.screen.height获得屏幕的高，window.screen.width获得屏幕的宽
   let iTop = (window.screen.height - 30 - iHeight) / 2;       //获得窗口的垂直位置;
   let iLeft = (window.screen.width - 10 - iWidth) / 2;        //获得窗口的水平位置;
   let style = 'height=' + iHeight + ',innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',toolbar=no,menubar=no,scrollbars=auto,resizable=no,location=no,status=no'
@@ -102,6 +101,7 @@ const githubLogin = async (code) => {
       store.user_avatar = res.data.avatar_url
       store.user_id = res.data.user_id
     }
+    localStorage.setItem("token", "token")
     loginVisible.value = false
   })
 }
@@ -124,6 +124,11 @@ const snippetLogin = () => {
   localStorage.setItem("token", "token")
   loginVisible.value = false
 }
+const emits = defineEmits(["sendMag"])
+const searchData = () => {
+  emits("sendMag", searchInput.value)
+}
+
 </script>
 
 <style scoped>

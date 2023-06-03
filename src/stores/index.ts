@@ -5,6 +5,7 @@ export const useCodeStore = defineStore({
     state:()=>({
         user_id:'m1FWh20W',
         user_name:'gxtna',
-        user_avatar:'https://avatars.githubusercontent.com/u/55348895?v=4'
+        user_avatar:'https://avatars.githubusercontent.com/u/55348895?v=4',
+        search_input:""
     })
 })
