@@ -63,7 +63,7 @@ type tagInfo = {
   tag_name: String
 }
 const commitContent = () => {
-  if (contentInfo.tags.length > 2) {
+  if (contentInfo.tags.length > 5) {
     ElMessage({
       message: '标签最多为5个',
       type: 'warning'

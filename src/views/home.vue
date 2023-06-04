@@ -76,8 +76,8 @@ const toDelete = (id: String) => {
       message: res ? "删除成功" : "删除失败",
       type: res ? "success" : "error"
     })
-    getAllSnippet()
   })
+  getAllSnippet()
 }
 
 const searchData = (searchInput) => {

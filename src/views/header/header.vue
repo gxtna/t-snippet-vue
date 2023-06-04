@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import {Search} from '@element-plus/icons-vue'
 import http from "@/utils/request";
-import {defineEmits, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import {useCodeStore} from "@/stores";
 
