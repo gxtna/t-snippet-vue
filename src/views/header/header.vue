@@ -1,10 +1,10 @@
 <template>
   <div class="headerContainer">
     <el-row :gutter="20">
-      <el-col :span="8">
+      <el-col :span="6">
         <el-image style="width: 100px; height: 30px;margin-top: 10px" :fit="'fill'" :src="avatarUrl" @click="goHome"/>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="14">
         <el-input
             v-model="searchInput"
             class="w-50 m-2"
